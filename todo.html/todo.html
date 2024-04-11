@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Todo App</title>
+<link rel="stylesheet" href="./todo.css">
+
+</head>
+<body>
+<div id="wrapper">
+    <div class="container">
+        <h2> My Todo List</h2>
+        <input type="text" id="taskInput" placeholder="Add a new task">
+        <button onclick="addTask()">Add Task</button>
+
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        let tasks = [];
+
+        function renderTasks() {
+            const taskList = document.getElementById("taskList");
+            taskList.innerHTML = "";
+
+            tasks.forEach((task, index) => {
+                const li = document.createElement("li");
+                li.textContent = task.name;
+                if (task.completed) {
+                    li.classList.add("completed");
+                }
+                li.addEventListener("click", () => toggleTaskCompletion(index));
+
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.addEventListener("click", (event) => deleteTask(event, index));
+
+                const updateButton = document.createElement("button");
+                updateButton.textContent = "Update";
+                updateButton.addEventListener("click", (event) => updateTask(event, index));
+
+                li.appendChild(deleteButton);
+                li.appendChild(updateButton);
+                taskList.appendChild(li);
+            });
+        }
+
+        function addTask() {
+            const taskInput = document.getElementById("taskInput");
+            const taskName = taskInput.value.trim();
+            if (taskName !== "") {
+                tasks.push({ name: taskName, completed: false });
+                renderTasks();
+                taskInput.value = "";
+            }
+        }
+
+        function toggleTaskCompletion(index) {
+            tasks[index].completed = !tasks[index].completed;
+            renderTasks();
+        }
+
+        function deleteTask(event, index) {
+            event.stopPropagation(); 
+            tasks.splice(index, 1);
+            renderTasks();
+        }
+
+        function updateTask(event, index) {
+            event.stopPropagation(); 
+            const newTaskName = prompt("Enter the updated task name:", tasks[index].name);
+            if (newTaskName !== null) {
+                tasks[index].name = newTaskName;
+                renderTasks();
+            }
+        }
+
+        renderTasks();
+    </script>
+</div>
+</body>
+</html>
